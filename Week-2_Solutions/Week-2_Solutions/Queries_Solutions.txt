@@ -1,0 +1,91 @@
+Queries
+
+1)	Write a query to display account number, customer’s number, customer’s firstname, lastname, account opening date. Display the records sorted in ascending order based on account number.
+
+
+SELECT 
+    am.account_number,
+    am.customer_number,
+    cm.firstname,
+    cm.lastname,
+    am.account_opening_date
+FROM 
+    account_master am
+JOIN 
+    customer_master cm ON am.customer_number = cm.customer_number
+ORDER BY 
+    am.account_number ASC;
+
+
+
+------------------------------------------
+
+2)   Write a query to display the number of customer’s from Delhi. Give the count an alias name of Cust_Count.
+
+SELECT count(*) as Cust_Count FROM customer_master Where customer_city='DELHI';
+
+
+----------------------------------------------
+
+3)    Write a query to display the customer number, customer firstname, account number for the customer’s whose accounts were created after 15th of any month. Display the records sorted in ascending order based on customer number and then by account number.
+
+SELECT 
+    am.customer_number,
+    cm.firstname,
+    am.account_number
+FROM 
+    account_master am
+JOIN 
+    customer_master cm ON am.customer_number = cm.customer_number
+WHERE 
+    DAY(am.account_opening_date) > 15
+ORDER BY 
+    am.customer_number ASC,
+    am.account_number ASC;
+
+
+
+-----------------------------------------
+
+4)   Write a query to display the number of customers who have registration but no account in the bank. Give the alias name as Count_Customer for number of customers.
+
+
+SELECT 
+    COUNT(*) AS Count_Customer
+FROM 
+    customer_master cm
+WHERE 
+    NOT EXISTS (
+        SELECT 
+            1 
+        FROM 
+            account_master am 
+        WHERE 
+            am.customer_number = cm.customer_number
+    );
+
+
+------------------------------------------------
+
+
+
+
+5)	Write a query to display the total number of withdrawals and total number of deposits being done by customer whose customer number ends with 001. The query should display transaction type and the number of transactions. Give an alias name as Trans_Count for number of transactions. Display the records sorted in ascending order based on transaction type.
+
+
+
+SELECT 
+    td.transaction_type,
+    COUNT(*) AS Trans_Count
+FROM 
+    transaction_details td
+JOIN 
+    account_master am ON td.account_number = am.account_number
+JOIN 
+    customer_master cm ON am.customer_number = cm.customer_number
+WHERE 
+    cm.customer_number LIKE '%001'
+GROUP BY 
+    td.transaction_type
+ORDER BY 
+    td.transaction_type ASC;
